@@ -1,0 +1,88 @@
+version: 2.1
+
+executors:
+  default:
+    docker:
+      - image: cimg/openjdk:11.0
+
+references:
+  repo_cache_key: &repo_cache_key v1-dependencies_{{ checksum "pom.xml" }}
+
+  restore_repo: &restore_repo
+    restore_cache:
+      key: *repo_cache_key
+
+  save_repo: &save_repo
+    save_cache:
+      key: *repo_cache_key
+      paths:
+        - ~/.m2
+
+workflows:
+  pipeline:
+    jobs:
+      - analyze
+      - test:
+         requires:
+           - analyze
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+                - release
+
+jobs:
+  analyze:
+    executor: default
+    description: "Analyze code"
+    steps:
+      - checkout
+      - *restore_repo
+      - run:
+          name: "Get dependencies"
+          command: |
+            mvn dependency:go-offline
+      - *save_repo
+      - run:
+          name: "Running code analysis"
+          command: |
+            mvn compile
+
+  test:
+    executor: default
+    description: "Test code"
+    steps:
+      - checkout
+      - *restore_repo
+      - run:
+          name: "Get dependencies"
+          command: |
+            mvn dependency:go-offline
+      - *save_repo
+      - run:
+          name: "Running code test"
+          command: |
+            mvn test
+
+  deploy:
+    executor: default
+    description: "Deploy to repository"
+    steps:
+      - checkout
+      - *restore_repo
+      - run:
+          name: "Get dependencies"
+          command: |
+            mvn dependency:go-offline
+      - *save_repo
+      - run:
+          name: "Import GPG Key"
+          command: |
+            echo -e "$GPG_KEY" | gpg --import  --no-tty --batch --yes
+      - run:
+          name: "Deploy to repository"
+          command: |
+            mvn -s release-settings.xml deploy -Prelease

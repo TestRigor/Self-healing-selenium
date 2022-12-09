@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{ISO8601} %X{sessionId} %X{flowId} %-5level %logger{1.}.%method(%line) - %tRmsg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.testrigor" level="debug" additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+		<Root level="warn">
+			<AppenderRef ref="CONSOLE" />
+		</Root>
+	</Loggers>
+</Configuration>
