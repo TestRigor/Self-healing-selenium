@@ -21,3 +21,25 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/target/
+
+.build-cache/
+.classpath
+.project
+.settings
+.iml
+.idea
+.checkstyle
+*.iml
+target
+rebel.xml
+test-output
+.DS_Store
+bin
+.pmd
+.pmdruleset.xml
+.pmdrulesets.xml
+*.log
+.apt_generated
+.apt_generated_tests
+.factorypath
