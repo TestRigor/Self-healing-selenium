@@ -41,15 +41,11 @@ jobs:
     steps:
       - checkout
       - *restore_repo
-      - run:
-          name: "Get dependencies"
-          command: |
-            mvn dependency:go-offline
       - *save_repo
       - run:
           name: "Running code analysis"
           command: |
-            mvn compile
+            mvn clean compile
 
   test:
     executor: default
@@ -57,10 +53,6 @@ jobs:
     steps:
       - checkout
       - *restore_repo
-      - run:
-          name: "Get dependencies"
-          command: |
-            mvn dependency:go-offline
       - *save_repo
       - run:
           name: "Running code test"
@@ -73,10 +65,6 @@ jobs:
     steps:
       - checkout
       - *restore_repo
-      - run:
-          name: "Get dependencies"
-          command: |
-            mvn dependency:go-offline
       - *save_repo
       - run:
           name: "Import GPG Key"
